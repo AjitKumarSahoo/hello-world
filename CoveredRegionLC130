@@ -1,0 +1,133 @@
+package Practice;
+
+import java.util.Stack;
+
+public class CoveredRegionsLC130 {
+
+    private class Pair {
+        int row;
+        int col;
+        Pair(int row,int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+
+    /**
+     * Given the input board, Need to find the region/s which is/are covered by Xs and need to converted to 'O's. Update
+     * happens in the same board.
+     *
+     * Idea: We need to visit all the 'O's at the boundary and the ones that are linked to these boundary 'O's. So whatever
+     * 'O's are left out in the middle portion of the matrix which are unvisited will be the ones to be converted to 'X'
+     * @param board input board of Xs and Os
+     */
+    private void maxRegion(char[][] board) {
+
+        int rows = board.length;
+        if (rows == 0) {
+            return;
+        }
+
+        printMatrix(board, "Input");
+        int cols = board[0].length;
+        boolean[][] visited = new boolean[rows][cols];
+
+
+        for (int i = 0; i < rows; i++) { //for all rows
+            visitNonIslandZeroes(board, visited, i, 0); //for first column
+            visitNonIslandZeroes(board, visited, i, cols -1); //for last column
+        }
+
+        for (int i = 0; i < cols; i++) { //for all columns
+            visitNonIslandZeroes(board, visited, 0, i); //for first row
+            visitNonIslandZeroes(board, visited, rows -1, i); //for last row
+        }
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (board[i][j] == 'O' && !visited[i][j]) { //Change the 'O' to 'X' if not visited
+                    board[i][j] = 'X';
+                }
+            }
+        }
+
+        printMatrix(board, "Output");
+    }
+
+    private void printMatrix(char[][] board, String type) {
+        System.out.println(type + ":");
+        for (char[] aBoard : board) {
+            for (char c : aBoard) {
+                System.out.print(c + " ");
+            }
+            System.out.println("\n");
+        }
+    }
+
+    /**
+     * for given row & column find out if there exists a boundary 'O'; if exists try to visit all the 'O's which are
+     * neighbor to these 'O's (not diagonal ones)
+     * @param board
+     * @param visited contains flags showing if a 'O' is visited or not
+     * @param row
+     * @param col
+     */
+    private void visitNonIslandZeroes(char[][] board, boolean[][] visited, int row, int col) {
+        if (board[row][col] == 'O' && !visited[row][col]) {
+
+            Stack<Pair> stack = new Stack<>();
+            stack.push(new Pair(row, col));
+            visited[row][col] = true;
+
+            int x, y;
+            while (!stack.isEmpty()) { //while all the neighboring 'O's are not visited
+                Pair pair = stack.pop();
+                x = pair.row;
+                y = pair.col;
+                visitNeighborZeroes(board, visited, x, y, stack);
+            }
+        }
+    }
+
+    /**
+     * Given a 'O' at a particular position (row,col), push its neighboring 'O's into the stack
+     * @param board
+     * @param visited
+     * @param row
+     * @param col
+     * @param stack contains all the 'O's to visit
+     */
+    private void visitNeighborZeroes(char[][] board, boolean[][] visited, int row, int col, Stack<Pair> stack) {
+        if (row - 1 >= 0 && board[row-1][col] == 'O' && !visited[row - 1][col]) {
+            stack.push(new Pair(row - 1, col));
+            visited[row-1][col] = true;
+        }
+        if (row + 1 < board.length && board[row+1][col] == 'O' && !visited[row + 1][col]) {
+            stack.push(new Pair(row + 1, col));
+            visited[row+1][col] = true;
+        }
+        if (col - 1 >= 0 && board[row][col-1] == 'O' && !visited[row][col - 1]) {
+            stack.push(new Pair(row, col - 1));
+            visited[row][col-1] = true;
+        }
+        if (col + 1 < board[0].length && board[row][col+1] == 'O' && !visited[row][col + 1]) {
+            stack.push(new Pair(row, col + 1));
+            visited[row][col+1] = true;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        char[][] matrix = new char[][]{
+                                        "OOOOXX".toCharArray(),
+                                        "OOOOOO".toCharArray(),
+                                        "OXOXOO".toCharArray(),
+                                        "OXOOXO".toCharArray(),
+                                        "OXOXOO".toCharArray(),
+                                        "OXOOOO".toCharArray()
+                                      };
+
+        new CoveredRegionsLC130().maxRegion(matrix);
+
+    }
+}
