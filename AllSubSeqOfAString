@@ -1,0 +1,54 @@
+package Practice;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Author: Ajit Ku. Sahoo
+ * Date: 10/18/2016.
+ *
+ * GoDaddy hackerrank question
+ */
+public class SubSequencesOfString {
+
+    private String[] getSubSequences(String str) {
+        int len = str.length();
+        int limit = (int)Math.pow(2, len); //no. of combinations possible of Str
+        List<String> seq = new ArrayList<>();
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < limit; i++) { //empty string not allowed, so starts from i=1
+
+            String binary = Integer.toBinaryString(i);
+            int noOfZeroesToPad = len - binary.length(); //no. of zeroes to pad at left to make 'binary' of equal length as of 'str'
+            binary = getZeroesPrefix(sb, noOfZeroesToPad) + binary;
+
+            sb.delete(0, sb.length());
+            for (int j = 0; j < len; j++) {
+                if (binary.charAt(j) == '1') { //if bit is 1, pick the character from S at that index
+                    sb.append(str.charAt(j));
+                }
+            }
+            seq.add(sb.toString());
+        }
+
+        String[] arr = seq.toArray(new String[0]);
+        Arrays.sort(arr); //need output in sorting order
+        return arr;
+    }
+
+    private String getZeroesPrefix(StringBuilder sb, int prefixZeroes) {
+        sb.delete(0, sb.length());
+        for (int i = 0; i < prefixZeroes; i++)
+            sb.append('0');
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        int count = 0;
+        for (String str : new SubSequencesOfString().getSubSequences("HackerRank")) {
+            System.out.println(++count + " " + str);
+        }
+    }
+}
