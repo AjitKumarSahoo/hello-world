@@ -1,0 +1,97 @@
+package Practice;
+
+import java.util.Scanner;
+
+/**
+ * Author: Ajit Ku. Sahoo
+ * Date: 10/15/2016.
+ * <p>
+ * HackerLand National Bank has a simple policy for warning clients about possible fraudulent account activity.
+ * If the amount spent by a client on a particular day is greater than or equal to 2X the client's median spending for
+ * the last d days, they send the client a notification about potential fraud. The bank doesn't send the client
+ * any notifications until they have at least d prior days of transaction data.
+ * Given the value of d and a client's total daily expenditures for a period of n days, find and print the number of
+ * times the client will receive a notification over all n days.
+ * <p>
+ * The first line contains two space-separated integers denoting the respective values of n (the number of days
+ * there is transaction data for) and d (the number of prior days the bank uses to calculate median spending).
+ * The second line contains n space-separated non-negative integers where each integer i denotes expenditure(i)(i.e., the
+ * client's total expenditure for day i).
+ * <p>
+ * 1 <= n <= 2*(10^5)
+ * 1 <= d <= n
+ * 0 <= expenditure(i)<=200
+ */
+
+public class ExpenditureNotificationHackerRank {
+
+    public static void main(String[] args) {
+        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */
+        Scanner input = new Scanner(System.in);
+
+        int n = input.nextInt();
+        int d = input.nextInt();
+
+        if (d >= n) {
+            System.out.println(0);
+            return;
+        }
+
+        int[] exp = new int[n];
+        for (int i = 0; i < n; i++) {
+            exp[i] = input.nextInt();
+        }
+
+        if (exp.length != n) {
+            System.out.println(0);
+            return;
+        }
+
+        int[] dExp = new int[200]; //expenditure is max 200
+        for (int i = 0; i < d; i++) {
+            dExp[exp[i]]++; //counts the occurrence of an expenditure
+        }
+
+
+        int notif = 0;
+        for (int i = d; i < n; i++) {
+            int median = getTwiceTheMedian(dExp, d);
+            if (exp[i] >= median)
+                notif += 1;
+        }
+
+        System.out.println(notif);
+
+    }
+
+    private static int getTwiceTheMedian(int[] dExp, int d) {
+
+        int count = (d + 1) / 2;
+        int i = 0;
+        // helps find the median of the array by traversing from the left and finding the first median no.of 
+        // of non-zero elements in the array (skipping elements being '0' i.e. the number is not a part 
+        // of the input expenditure array).   
+        for (; i <= 200; i++) {
+            if (dExp[i] != 0) {
+                if (count > dExp[i]) {
+                    count -= dExp[i];
+                } else { 
+                    break; //current index is the number to be considered for median calculation
+                }
+            }
+        }
+
+        int twiceMedian = i;
+        if (d % 2 == 0) { //d is even, means 2 middle numbers needed to calculate median
+            if (count == dExp[i]) //means, the next non-zero number is not in this column
+                while (dExp[++i] == 0) ;
+            // no division by 2, since we are returning twice the median in order to handle floating average, and anyway
+            // we are going to do the check if expenditure >= 2 * median. So why not return twice of median
+            twiceMedian = twiceMedian + i; 
+        } else { //d is odd, median is the middle element
+            twiceMedian = 2 * twiceMedian;
+        }
+
+        return twiceMedian;
+    }
+}
