@@ -1,0 +1,52 @@
+import java.util.Arrays;
+
+/**
+ * Author: Ajit Ku. Sahoo
+ * Date: 10/31/2016.
+ */
+ 
+public class LongestIncresingSubsequence {
+
+    private int[] getLIS(int[] input) {
+
+        int[] count = new int[input.length];
+        Arrays.fill(count,1);
+        int[] track = new int[input.length]; //to keep a track of the route of LIS
+        int max = 0; //length of LIS
+        int maxI = 0; //Index of last element of LIS in input array
+
+        for (int i = 1; i < input.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (input[j] < input[i]) {
+                    if (count[j] + 1 > count[i]) {
+                        count[i] = count[j] + 1;
+                        track[i] = j;
+                    }
+                    if (max < count[i]) {
+                        max = count[i];
+                        maxI = i;
+                    }
+                }
+            }
+        }
+
+        System.out.println("input: " + Arrays.toString(input));
+        System.out.println("count: " + Arrays.toString(count));
+        System.out.println("track: " + Arrays.toString(track));
+        System.out.println("max=" + max + ", maxI=" + maxI);
+
+        int[] lis = new int[max];
+        int i = maxI;
+        int counter = max - 1;
+        while(i > 0) {
+            lis[counter--] = input[i];
+            i = track[i]; //let's go to the index which had led us to visit i
+        }
+        return lis;
+    }
+
+    public static void main(String[] args) {
+        int[] lis = new LongestIncresingSubsequence().getLIS(new int[]{3, 4, -1, 0, 0, 6, 2, 3});
+        System.out.println("LIS:" + Arrays.toString(lis));
+    }
+}
