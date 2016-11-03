@@ -1,0 +1,83 @@
+package Practice;
+
+import java.util.*;
+
+/**
+ * Author: Ajit Ku. Sahoo
+ * Date: 10/18/2016.
+ */
+public class TripletsSumToLessThanTarget {
+
+    private List<String> getTriplets(int[] input, int target) {
+        Arrays.sort(input);
+
+        int k = input.length -1;
+        while ( k >= 0 && input[k] + input[1] > target) { //no = assuming we can have '0'
+            k--;
+        }
+
+        if (k < 2) {
+            return new ArrayList<>(0);
+        }
+
+        List<String> list = new ArrayList<>();
+        while (k >= 2) {
+            int rem = target - input[k];
+            int j = k - 1;
+            int i = 0;
+            while (j > i+1) {
+                /*if(j - i < 2)
+                    break;*/
+                int mid = (j + i) / 2;
+                if (input[mid] == rem) {
+                    j = mid - 1;
+                    break;
+                }
+                if (input[mid] < rem) {
+                    if (input[mid + 1] >= rem) {
+                        j = mid;
+                        break;
+                    } else {
+                        i = mid;
+                    }
+                } else {
+                    if (input[mid - 1] <= rem) {
+                        j = mid - 1;
+                        break;
+                    } else {
+                        j = mid;
+                    }
+                }
+            }
+
+            if (j <= i) {
+                k--;
+                continue;
+            }
+
+
+            for (; j > 0; j--) {
+                for (i = j - 1; i >= 0; i--) {
+                    if (input[i]+input[j] <= rem) {
+                        String str = input[i] + ", " + input[j] + ", " + input[k];
+                        list.add(str);
+                    }
+                }
+            }
+            k--;
+        }
+
+        return list;
+    }
+
+    public static void main(String[] args) {
+        int[] input = new int[]{6,6,6,6,8,8,8,8,8,8,8};
+        List<String> triplets = new TripletsSumToLessThanTarget().getTriplets(input, 21);
+
+        System.out.println("No. of triplets: " + triplets.size());
+        System.out.println("Triplets:");
+        for (String triplet : triplets) {
+            System.out.println(triplet);
+        }
+    }
+}
