@@ -1,0 +1,70 @@
+package Practice.HRUniCodeSprint;
+
+import java.util.*;
+
+/**
+ * Author: Ajit Ku. Sahoo
+ * Date: 11/11/2016.
+ */
+public class DFSGraph {
+
+
+    private boolean[][] adjMatrix;
+    private int n;
+    private String finalPath;
+    private int max = -1;
+
+    private DFSGraph(int n, boolean[][] adjMatrix) {
+        this.n = n;
+        this.adjMatrix = adjMatrix;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
+        int m = scanner.nextInt();
+
+        boolean[][] adjMatrix = new boolean[n + 1][n + 1];
+
+        for (int i = 0; i < m; i++) {
+            int c1 = scanner.nextInt();
+            int c2 = scanner.nextInt();
+            adjMatrix[c1][c2] = true;
+            adjMatrix[c2][c1] = true;
+        }
+
+        new DFSGraph(n, adjMatrix).dfsSearch();
+
+    }
+
+    private void dfsSearch() {
+
+        boolean[] visited = new boolean[n + 1];
+
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i]) {
+                dfsVisit(i, 1, visited, "" + i);
+            }
+        }
+
+        System.out.println(max);
+        System.out.print(finalPath);
+    }
+
+    private void dfsVisit(int u, int depth, boolean[] visited, String s) {
+
+        visited[u] = true;
+        for (int i = 1; i <= n; i++) {
+            if (adjMatrix[u][i] && !visited[i]) {
+                dfsVisit(i, depth + 1, visited, s + " " + i);
+            }
+        }
+        visited[u] = false;
+
+        if (max < depth) {
+            max = depth;
+            finalPath = s;
+        }
+    }
+}
