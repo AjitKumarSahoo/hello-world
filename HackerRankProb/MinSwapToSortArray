@@ -1,0 +1,100 @@
+package Practice.HackerRankPractice;
+
+import javafx.util.Pair;
+
+import java.util.*;
+
+/**
+ * Author: Ajit Ku. Sahoo
+ * Date: 11/12/2016.
+ */
+public class NoOfMinSwapToSortArray {
+
+    private int n;
+    private boolean[] used;
+    private List<Pair<Integer,Integer>> forward;
+    private List<Pair<Integer,Integer>> reverse;
+
+    private NoOfMinSwapToSortArray(int n) {
+        this.n = n;
+        used = new boolean[n];
+        forward = new ArrayList<>(n);
+        reverse = new ArrayList<>(n);
+    }
+
+    private void process() {
+        Collections.sort(forward, (o1, o2) -> {
+            if (o1.getKey() > o2.getKey())
+                return 1;
+            return -1;
+        });
+
+        Collections.sort(reverse, (o1, o2) -> {
+            if (o1.getKey() < o2.getKey())
+                return 1;
+            return -1;
+        });
+        Collections.reverse(reverse);
+       
+        for (int i = 0; i < n; i++) {
+            used[i] = false;
+        }
+
+        int forwardCount = 0;
+        for (int i = 0; i < n; i++) {
+            if (!used[i]) {
+                ++forwardCount;
+                goForward(i);
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            used[i] = false;
+        }
+
+        int reverseCount = 0;
+        for (int i = 0; i < n; i++) {
+            if (!used[i]) {
+                ++reverseCount;
+                goReverse(i);
+            }
+        }
+
+        int answer = Math.min(n - forwardCount, n - reverseCount);
+        System.out.println(answer);
+    }
+
+
+    private void goForward(int v) {
+        if (used[v])
+            return;
+        used[v] = true;
+        goForward(forward.get(v).getValue());
+    }
+
+    private void goReverse(int v) {
+        if (used[v])
+            return;
+        used[v] = true;
+        goReverse(reverse.get(v).getValue());
+    }
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+        int n = scanner.nextInt();
+        NoOfMinSwapToSortArray obj = new NoOfMinSwapToSortArray(n);
+        for (int i = 0; i < n; i++) {
+            int num = scanner.nextInt();
+            obj.populateList(i, num);
+        }
+
+        obj.process();
+    }
+
+    private void populateList(int i, int num) {
+        Pair<Integer, Integer> pair = new Pair<>(num, i);
+        forward.add(i, pair);
+        reverse.add(i, pair);
+    }
+}
