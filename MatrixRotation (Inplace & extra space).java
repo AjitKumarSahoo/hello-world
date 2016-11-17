@@ -4,7 +4,7 @@ package Practice;
  * Author: Ajit Ku. Sahoo
  * Date: 11/16/2016.
  */
-public class RectangleRotation {
+public class MatrixRotation {
 
     private static void printMatrix(int[][] rotated) {
         for (int i = 0; i < rotated.length; i++) {
@@ -56,7 +56,7 @@ public class RectangleRotation {
             square[i] = square[rows-i-1];
             square[rows-i-1] = temp;
         }
-
+            
         if (rightRotate) {
             //mirror image along left-top 2 bottom-right diagonal
             for (int i = rows-1; i > 0; i--) {
@@ -98,12 +98,13 @@ public class RectangleRotation {
 
         System.out.println("Original");
         printMatrix(rect);
-
-        int[][] rotated = new RectangleRotation().rotate(rect, true);
+        
+        MatrixRotation mr = new MatrixRotation();
+        int[][] rotated = mr.rotate(rect, true);
         System.out.println("right rotated:");
         printMatrix(rotated);
 
-        int[][] rotated1 = new RectangleRotation().rotate(rect, false);
+        int[][] rotated1 = mr.rotate(rect, false);
         System.out.println("left rotated:");
         printMatrix(rotated1);
 
@@ -113,7 +114,7 @@ public class RectangleRotation {
                 {9, 10, 11, 12},
                 {13, 14, 15, 16},
         };
-        new RectangleRotation().inplaceRotate(square, false);
+        mr.inplaceRotate(square, false);
         System.out.println("left rotation (in place rotated)");
         printMatrix(square);
     }
