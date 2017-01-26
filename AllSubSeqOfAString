@@ -8,8 +8,10 @@ import java.util.List;
  * Author: Ajit Ku. Sahoo
  * Date: 10/18/2016.
  *
- * GoDaddy hackerrank question
+ * GoDaddy Round 1 - hackerrank question 
  */
+
+
 public class SubSequencesOfString {
 
     private String[] getSubSequences(String str) {
